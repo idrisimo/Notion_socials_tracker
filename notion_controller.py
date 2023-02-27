@@ -1,35 +1,4 @@
 from notion_client import Client
-from pprint import pprint
-
-int_token = "secret_S9SEmPUibV8GqucR8BBYLAmVwtkaIiCEs9zFPu15DTY"
-notion = Client(auth=int_token)
-
-stuff_filter = {"filter": {
-      "value": 'database',
-      "property": 'object'
-    }}
-list_databases_response = notion.search(**{"query": "social media management dash", "filter": {
-      "value": 'database',
-      "property": 'object'
-    }})
-
-dashboard_db_id = list_databases_response["results"][0]["id"]
-pprint(dashboard_db_id)
-
-my_pages = notion.databases.query(**{"database_id": dashboard_db_id, "filter": {"property":"Instagram Status", "select": {"is_empty":True}}})
-for page in my_pages["results"]:
-  title = page["properties"]["Content"]["title"][0]["text"]["content"]
-  page_id = page["id"]
-  date = page["properties"]["Date"]["date"]
-  insta_status = page["properties"]["Instagram Status"]
-  print("Title: ",title)
-  print("Page id: ",page_id)
-  print("Date: ",date["start"])
-  print("instagram status: ",insta_status["select"])
-  # pprint(page["properties"])
-
-  # update = notion.pages.update(**{"page_id":page_id, "properties":{"Instagram Status": {'select': {'color': 'green', 'id': 'Dkrp', 'name': 'Published'}}}})
-
 
 class Notion_controller():
 
@@ -71,6 +40,7 @@ class Notion_controller():
     return pages_list
 
   def update_page_properties(self, page_id, properties):
+    # Properties look like this: "properties":{"Instagram Status": {'select': {'color': 'green', 'id': 'Dkrp', 'name': 'Published'}}}
     params = {"page_id":page_id, "properties":properties}
     update_response = self.notion.pages.update(**params)
     return update_response
